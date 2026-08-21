@@ -75,6 +75,13 @@
   （`1/4250`）、进度条、目录/书签按钮全部渲染正常，无任何加载错误；`dsh-client-runtime`/`dsh-client-locale`/
   `dsh-client-ui-sidebar`/`dsh-client-ui-settings`/`dsh-settings` 均在 rc.1 正常加载，`dsh-client-ui-slots`
   仍按 inject 声明解析为虚拟模块。
+- 适配验证：DeepSeek Harness **0.1.1-rc.2**（`latest` 标签，已实际升级并用浏览器实测）。rc.2 延续
+  rc.1 的格局——`dsh-client-ui-primitives`/`dsh-client-ui-slots` 仍由 web 前端内置虚拟模块提供，
+  插件依赖的 `dsh-client-runtime`/`dsh-client-locale`/`dsh-client-ui-sidebar`/`dsh-client-ui-settings`/
+  `dsh-settings` 均在 rc.2 有发布版本且正常解析。**实测结果**：`dsh web` 以 rc.2 正常启动，
+  `/readwrite-hub-api/list` 返回 200，cordis 配置注入 `readwrite-hub` 插件；浏览器端侧边栏「工作区文件」
+  面板、文件树、阅读模式、跨翻页方式进度书签（分页 `左右翻页` ↔ 滚动翻页，进度保持在同一段落附近）
+  全部正常，无任何加载错误。
 
 ---
 
