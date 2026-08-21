@@ -52,11 +52,15 @@
 - 实测环境：DeepSeek Harness **0.1.0-rc.8**（自 rc.7 升级验证：插件注入点、`dsh-client-runtime` /
   `dsh-client-locale` / `dsh-client-ui-sidebar` 均随 rc.8 正常加载，web UI、文件树、码字模式
   自动保存功能正常；`dsh-client-ui-slots` 不再作为独立包安装，但 boot 仍能按 inject 声明解析）。
-- 适配验证：DeepSeek Harness **0.1.1-rc.1**（`latest` 标签）。rc.1 将 `dsh-client-ui-primitives` 从独立
-  npm 包改为 web 前端内置虚拟模块（模块表 `"@deepseek-ai/dsh-client-ui-primitives"` 映射到内联 `Kd`，
-  导出 `Button`/`Tooltip`/`Icon*` 等），插件运行时的 `require("@deepseek-ai/dsh-client-ui-primitives")`
-  仍能解析；`dsh-client-runtime`/`dsh-client-locale`/`dsh-client-ui-sidebar`/`dsh-client-ui-settings`/
-  `dsh-settings` 均在 rc.1 正常加载，`dsh-client-ui-slots` 仍按 inject 声明解析为虚拟模块。
+- 适配验证：DeepSeek Harness **0.1.1-rc.1**（`latest` 标签，已实际升级并用浏览器实测）。rc.1 将
+  `dsh-client-ui-primitives` 从独立 npm 包改为 web 前端内置虚拟模块（模块表
+  `"@deepseek-ai/dsh-client-ui-primitives"` 映射到内联 `Kd`，导出 `Button`/`Tooltip`/`Icon*` 等），
+  插件运行时的 `require("@deepseek-ai/dsh-client-ui-primitives")` 仍能解析。
+  **实测结果**：`dsh web` 以 rc.1 正常启动，`/readwrite-hub-api/list` 返回 200，cordis 配置注入
+  `readwrite-hub` 插件；浏览器端侧边栏「工作区文件」面板、文件树、码字/阅读模式工具栏、阅读分页
+  （`1/4250`）、进度条、目录/书签按钮全部渲染正常，无任何加载错误；`dsh-client-runtime`/`dsh-client-locale`/
+  `dsh-client-ui-sidebar`/`dsh-client-ui-settings`/`dsh-settings` 均在 rc.1 正常加载，`dsh-client-ui-slots`
+  仍按 inject 声明解析为虚拟模块。
 
 ---
 
