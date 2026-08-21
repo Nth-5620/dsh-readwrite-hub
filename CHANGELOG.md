@@ -56,6 +56,10 @@
   重新按段落索引（`paragraph`，两种模式通用的绝对定位键）定位；同时给滚动模式渲染的章节标题行补上
   `data-para-index`，使书签/进度定位到章节标题那一行也能命中。用户书签跳转本就以 `paragraph` 为键，
   现与进度书签统一，两种翻页方式下均能精确定位。
+- **新增更新维护规范**：新增 [`CONTRIBUTING.md`](./CONTRIBUTING.md)，记录从改 `lib/` → `node --check`
+  校验 → 浏览器实测 → 更新 CHANGELOG → git 提交（身份 `Nth-5620`）→ Windows 中转推送的全流程约定，
+  含「不要运行 build.mjs（魔改分支保护）」「token 只用一次性 URL 认证、用完即删」「测试勿污染
+  state.json」等注意项。
 
 ### 适配验证
 
