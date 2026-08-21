@@ -47,6 +47,17 @@
   「添加书签/删除书签」按钮的判定——按钮只根据用户自定义书签触发和响应；
   手动书签删除后立即持久化。
 
+### 适配验证
+
+- 实测环境：DeepSeek Harness **0.1.0-rc.8**（自 rc.7 升级验证：插件注入点、`dsh-client-runtime` /
+  `dsh-client-locale` / `dsh-client-ui-sidebar` 均随 rc.8 正常加载，web UI、文件树、码字模式
+  自动保存功能正常；`dsh-client-ui-slots` 不再作为独立包安装，但 boot 仍能按 inject 声明解析）。
+- 适配验证：DeepSeek Harness **0.1.1-rc.1**（`latest` 标签）。rc.1 将 `dsh-client-ui-primitives` 从独立
+  npm 包改为 web 前端内置虚拟模块（模块表 `"@deepseek-ai/dsh-client-ui-primitives"` 映射到内联 `Kd`，
+  导出 `Button`/`Tooltip`/`Icon*` 等），插件运行时的 `require("@deepseek-ai/dsh-client-ui-primitives")`
+  仍能解析；`dsh-client-runtime`/`dsh-client-locale`/`dsh-client-ui-sidebar`/`dsh-client-ui-settings`/
+  `dsh-settings` 均在 rc.1 正常加载，`dsh-client-ui-slots` 仍按 inject 声明解析为虚拟模块。
+
 ---
 
 ## 0.1.0（上游原版）
