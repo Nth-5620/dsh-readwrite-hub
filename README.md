@@ -38,10 +38,10 @@
 上游列出所有已注册工作区（历史工作区越积越多）；本分支改为**只显示当前会话所属工作区**，
 切换会话时文件树自动跟随。
 
-## 0.4 「添加到对话」→ 输入框内胶囊
+## 0.4 「添加到对话」→ 输入框 @ 引用
 
-右键文件 / 文件夹 →「添加到对话」：通过 DSH 框架原生 `slash/input-insert-reference` 机制，
-在输入框内渲染只显示**文件名**的胶囊，发送时自动还原为**完整绝对路径**。
+右键文件 / 文件夹 →「添加到对话」：通过 DSH 框架原生的 **`slash/input-insert-reference`** 机制
+在输入框内插入 **@ 文件引用**（与 DeepSeek Harness 原版风格一致），发送时自动还原为**完整绝对路径**。
 
 ## 0.5 对话内文件链接 → 插件内打开
 
@@ -180,7 +180,8 @@ are inherited from the upstream project.
 **Other differences from upstream**:
 - **Fixed right sidebar** instead of the popup two-pane panel.
 - **Single-workspace file tree** (only the current session's workspace).
-- **"Add to conversation" renders an in-composer chip** (full path restored on send).
+- **"Add to conversation" inserts a native `@` file reference** (via the
+  framework's `slash/input-insert-reference`; the full path is restored on send).
 - **File links in chat open in the plugin editor** instead of the system app.
 - **Writing mode**: serif/kai/sans/mono fonts, size, line spacing, margins, paper
   backgrounds, **auto soft-wrap**, **auto-save**, ruled lines (single-layer CSS
