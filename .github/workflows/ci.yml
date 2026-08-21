@@ -1,0 +1,36 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+    tags: ["v*"]
+  pull_request:
+
+jobs:
+  build:
+    # 本仓库为魔改分支：运行代码在 lib/（src/ 是上游原版快照）。
+    # 只做语法校验，绝不执行 build.mjs——它会用 src/ 覆盖 lib/ 抹掉魔改。
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - run: node --check lib/index.js && node --check lib/client.js
+
+  publish:
+    # 推送 v* 标签时自动发布到 npm（需在仓库 Secrets 配置 NPM_TOKEN）。
+    # 注意：发布的是魔改版 lib/，并非上游原版。
+    if: startsWith(github.ref, 'refs/tags/v')
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          registry-url: https://registry.npmjs.org
+      - run: node --check lib/index.js && node --check lib/client.js
+      - run: npm publish --access public
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}

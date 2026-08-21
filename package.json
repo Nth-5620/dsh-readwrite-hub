@@ -1,0 +1,71 @@
+{
+  "name": "dsh-readwrite-hub",
+  "version": "0.2.0",
+  "description": "A novel-writing & reading workspace plugin for DeepSeek Harness: page-flip reading, character-accurate pagination, progress bookmarks, writing mode with ruled lines and paper backgrounds. Fork of dsh-workspace-explorer (MIT).",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Nth-5620/dsh-readwrite-hub.git"
+  },
+  "type": "module",
+  "main": "lib/index.js",
+  "exports": {
+    ".": {
+      "default": "./lib/index.js"
+    },
+    "./client": {
+      "default": "./lib/client.js"
+    },
+    "./package.json": "./package.json"
+  },
+  "dsh": {
+    "client": {
+      "platform": "web",
+      "inject": [
+        "@deepseek-ai/dsh-client-runtime",
+        "@deepseek-ai/dsh-client-locale",
+        "@deepseek-ai/dsh-client-ui-slots",
+        "@deepseek-ai/dsh-client-ui-sidebar",
+        "@deepseek-ai/dsh-client-ui-settings"
+      ]
+    },
+    "bundle": {
+      "patch": "./cordis.patch.yml"
+    }
+  },
+  "files": [
+    "lib/index.js",
+    "lib/client.js",
+    "cordis.patch.yml",
+    "README.md",
+    "CHANGELOG.md",
+    "LICENSE"
+  ],
+  "license": "MIT",
+  "keywords": [
+    "dsh",
+    "deepseek-harness",
+    "plugin",
+    "novel",
+    "reading",
+    "writer",
+    "pagination",
+    "bookmark",
+    "web-novel",
+    "workspace",
+    "file-explorer",
+    "editor"
+  ],
+  "scripts": {
+    "build": "node build.mjs",
+    "check": "node --check lib/index.js && node --check lib/client.js"
+  },
+  "peerDependencies": {
+    "@deepseek-ai/cordis": ">=4.0.1",
+    "react": "^18.2.0",
+    "@deepseek-ai/dsh-client-runtime": ">=0.1.0-rc.6",
+    "@deepseek-ai/dsh-client-locale": ">=0.1.0-rc.6",
+    "@deepseek-ai/dsh-client-ui-slots": ">=0.1.0-rc.6",
+    "@deepseek-ai/dsh-client-ui-sidebar": ">=0.1.0-rc.6",
+    "@deepseek-ai/dsh-client-ui-primitives": ">=0.1.0-rc.6"
+  }
+}

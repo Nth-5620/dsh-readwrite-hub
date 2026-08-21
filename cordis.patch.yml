@@ -1,0 +1,4 @@
+# dsh-readwrite-hub bundle patch: mounts this package as one plugin entry.
+- insert:
+    - id: readwrite-hub
+      name: dsh-readwrite-hub
