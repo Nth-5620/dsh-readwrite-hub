@@ -13,13 +13,16 @@
 ### 小说阅读模式
 
 - **按字分页**：CJK 字宽校准 + 字符切片，段落可跨页、页面始终填满（实测每页底部仅留一行安全余量），只在新章节另起一页。
-- **进度自动记忆**：翻页即写盘（`~/.dsh/readwrite-hub/state.json`），关闭应用 / 切换文件 / 重开 Harness 都不丢进度；重新打开自动续读。
 - **左右翻页 / 滚动翻页进度共享**：两种方式共用同一份进度书签，切换翻页方式后自动重定位。
-- **进度书签置顶**：书签面板中进度书签永远排在最前，显示记录时间（如 `2026-08-21 15:33`）。
-- **「返回原进度」胶囊**：跳页 / 点进度条 / 搜索后出现，一键回到原位置；连续 3 次自然翻页后自动确认新位置。
-- **章节目录**：自动解析「第一章」「序章」「番外」「Chapter N」「纯数字行」「## 标题」等十余种章节格式，点击直达。
-- **书签系统**：一键添加 / 删除当前页书签，点击跳转；底部输入页码回车直达。
+- **进度自动记忆**：翻页即写盘（`~/.dsh/readwrite-hub/state.json`），关闭应用 / 切换文件 / 重开 Harness 都不丢进度；重新打开自动续读。
+- **排版**：工具栏「排版」按钮可调字体（衬线 / 楷体 / 无衬线 / 等宽）、字号（A- / A+）、行距、左右边距与纸张背景（默认 / 米色 / 浅绿 / 蓝色），**与码字模式共享同一套排版偏好**，实时生效。
+- **书签**：
+  - **进度书签**：自动记录，始终排在书签面板最前（不可删除），显示记录时间（如 `2026-08-21 15:33`）——用于续读与「返回原进度」。
+  - **用户书签**：点「书签」可一键添加 / 删除当前页书签，菜单内点击即跳转到对应位置。
+- **章节目录**：自动解析「第一章」「序章」「番外」「Chapter N」「纯数字行」「## 标题」等十余种章节格式，目录内点击直达。
+- **跳页输入框**：底部输入页码回车直达。
 - **进度条**：点击任意位置跳转，即时反馈；键盘翻页 / 滚动（PageUp / PageDown / ↑ / ↓ / Home / End / 空格）。
+- **「返回原进度」胶囊**：跳页 / 点进度条 / 搜索后出现，一键回到原位置；连续 3 次自然翻页后自动确认新位置。
 - **流畅滚动**：滚动模式下段落启用 `content-visibility: auto`，视口外段落跳过 layout/paint，长文档拖动宽度、上下滚动流畅。
 
 ### 书架
@@ -132,11 +135,12 @@ and a novel-reading mode, all in one workspace. Click **Write** for the drafting
 **Read** to turn the same file into a book layout; typography preferences are shared.
 
 **Feature highlights**:
-- **Reading mode**: character-accurate pagination, auto-saved progress (per file, on page turn
-  and shutdown), shared **scroll / paged progress** that relocates on flip-mode switch, a pinned
-  progress bookmark, a "Return to progress" chip, chapter TOC, bookmarks, page-jump input,
-  instantly-responsive progress bar, keyboard paging/scrolling, and smooth scrolling via
-  `content-visibility: auto`.
+- **Reading mode**: character-accurate pagination, shared **scroll / paged progress** that
+  relocates on flip-mode switch, auto-saved progress (per file, on page turn and shutdown),
+  **typography** (font, size, line spacing, margins, paper backgrounds — shared with writing mode),
+  **bookmarks** (an auto progress bookmark pinned at the top of the list, plus user bookmarks
+  add/remove/jump), a "Return to progress" chip, chapter TOC, page-jump input, instantly-responsive
+  progress bar, keyboard paging/scrolling, and smooth scrolling via `content-visibility: auto`.
 - **Bookshelf**: read texts are auto-shelved; top-bar icon toggles shelf ↔ file tree; sortable by
   recent read, pinnable, searchable, removable; click a book to resume reading.
 - **Writing mode**: fonts, size, line spacing, margins, paper backgrounds, auto soft-wrap,
