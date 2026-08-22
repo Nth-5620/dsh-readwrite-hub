@@ -1,7 +1,7 @@
 {
   "name": "dsh-readwrite-hub",
   "version": "0.2.0",
-  "description": "A novel-writing & reading workspace plugin for DeepSeek Harness: page-flip reading, character-accurate pagination, progress bookmarks, writing mode with ruled lines and paper backgrounds. Fork of dsh-workspace-explorer (MIT).",
+  "description": "An independent novel-writing & reading workspace plugin for DeepSeek Harness: page-flip reading, character-accurate pagination, shared scroll/paged progress, bookshelf, and a writing mode with ruled lines and paper backgrounds. Integrates the workspace-explorer file tree and editor foundations (MIT).",
   "repository": {
     "type": "git",
     "url": "https://github.com/Nth-5620/dsh-readwrite-hub.git"
