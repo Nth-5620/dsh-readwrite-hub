@@ -113,9 +113,13 @@ dsh plugin --profile web add github:Nth-5620/dsh-readwrite-hub
 
 ## 致谢与许可
 
-本插件的**文件树、编辑器、码字模式等基础能力**来自并集成了
+本插件的**基础文件树、编辑器与「@ 文件引用」联动**来自并集成了
 [`3911ee/dsh-workspace-explorer`](https://github.com/3911ee/dsh-workspace-explorer)（MIT License），
-在此**尊重并感谢原作者的贡献**。本插件在其基础上扩展了小说阅读模式、书架与重新设计的固定侧边栏。
+在此**尊重并感谢原作者的贡献**。
+
+本插件在继承上述基础能力之外，**自行新增**了码字模式（字体 / 字号 / 行距 / 边距 / 纸张背景 /
+自动软换行 / 横线格 / 自动保存 / 段落格式化）、小说阅读模式（按字分页 / 进度记忆 / 书签 / 目录 /
+滚动与翻页进度共享）、书架，以及重新设计的固定右侧侧边栏与单工作区文件树。
 
 本插件以 **MIT** 协议发布（见 `LICENSE`），同时保留上游版权声明并额外标注本插件版权。
 
@@ -147,10 +151,15 @@ and a novel-reading mode, all in one workspace. Click **Write** for the drafting
 
 ## Attribution & License
 
-The **file tree, editor, and writing-mode foundations** of this plugin are integrated from
-[`3911ee/dsh-workspace-explorer`](https://github.com/3911ee/dsh-workspace-explorer) (MIT License).
-We respect and thank the original author for their contribution. On that foundation this plugin
-adds a novel-reading mode, a bookshelf, and a redesigned fixed sidebar.
+The **foundational file tree, editor, and "@ file reference" integration** of this plugin come
+from [`3911ee/dsh-workspace-explorer`](https://github.com/3911ee/dsh-workspace-explorer) (MIT License).
+We respect and thank the original author for their contribution.
+
+On top of those inherited foundations, this plugin **adds** the writing mode (fonts, size, line
+spacing, margins, paper backgrounds, auto soft-wrap, ruled lines, auto-save, paragraph formatting),
+the novel-reading mode (character-accurate pagination, progress memory, bookmarks, TOC, shared
+scroll/paged progress), the bookshelf, as well as a redesigned fixed right sidebar and a
+single-workspace file tree.
 
 This plugin is released under the **MIT** License (see `LICENSE`), retaining the upstream
 copyright notice and additionally attributing this plugin.
