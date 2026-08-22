@@ -45,6 +45,9 @@
   `querySelectorAll("p")` 遍历全部约 1.9 万段落并对每个调用 `getBoundingClientRect()`，触发 O(n)
   次同步布局重排。现改为二分查找（段落按 para-index 顺序呈单调 bottom），将强制布局从 O(n) 降到
   O(log n)，拖宽/点条即时响应。
+- **进度条百分比显示滞后**：滚动模式下点击进度条跳转后，底部 `readingTrack` 的填充宽度与百分比
+  （依赖 `scrollPct` 状态）未随程序化跳转即时刷新。现在设置 `el.scrollTop` 后同步 `setScrollPct`/
+  `scrollTopRef`，进度条跳转即刻显示目标百分比。
 
 ## 0.2.0
 
