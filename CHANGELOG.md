@@ -1,7 +1,8 @@
 # Changelog
 
 本仓库是 [`3911ee/dsh-workspace-explorer`](https://github.com/3911ee/dsh-workspace-explorer)
-（MIT）的魔改分支。`lib/` 为运行版（无需构建），新增小说阅读模式、书架等能力。
+（MIT）的魔改分支。`lib/` 为运行版源码（无需构建，改完 dsh 按 `?rev=` 下发），本仓库没有 `src/`
+（上游原版快照，由 `build.mjs` 在魔改版下拒绝覆盖以保护改动）。
 
 ## 0.3.0（当前）
 
@@ -32,86 +33,57 @@
   `state.progress.paragraph`），导致重新打开文件不跳到上次进度的问题。
 - **进度覆盖**：修复打开文件时在恢复进度之前就把当前位置（第 1 页）写盘覆盖历史进度的问题；
   现在恢复完成前不保存，用户翻页/滚动后方才保存新位置。
+- **滚动/翻页进度共享回归**：修复本会话为优化性能引入的两处 `flipMode === "scroll"` 提前 return
+  （测量 effect 与 `pages` useMemo），导致滚动模式下 `measured`/`pages` 被置空、切换翻页方式后
+  不能从上次进度续读的问题。现在滚动模式下仍进行段落测量与分页，保证两种翻页方式共享同一份
+  进度书签与续读位置。
+- **滚动模式恢复定位**：修复滚动模式下恢复/跳转进度依赖 `element.offsetTop` 失效的问题。因滚动
+  段落带 `content-visibility:auto`，视口外侧段落被浏览器跳过布局，`offsetTop` 恒为 0，导致
+  `el.scrollTop = target.offsetTop - ...` 计算出负值被钳制为 0，点进度条 / 切模式后停回文首。
+  现改用 `target.scrollIntoView({ block: "start" })` 定位，浏览器可正确处理 content-visibility。
+- **点进度条卡死**：修复滚动模式下点击进度条跳转卡死数分钟的问题。原 `currentParagraph()` 用
+  `querySelectorAll("p")` 遍历全部约 1.9 万段落并对每个调用 `getBoundingClientRect()`，触发 O(n)
+  次同步布局重排。现改为二分查找（段落按 para-index 顺序呈单调 bottom），将强制布局从 O(n) 降到
+  O(log n)，拖宽/点条即时响应。
 
 ## 0.2.0
 
-### 阅读模式（新增，上游没有）
+### 新增
 
-- **按字分页**：CJK 字宽校准 + 字符切片，段落可跨页、页面始终填满；仅新章节另起一页。
-- **进度自动记忆**：翻页即写盘（`~/.dsh/readwrite-hub/state.json`），重开文件自动续读；
-  页面卸载/关闭时立即落盘，不丢失进度。
-- **进度书签置顶**：书签面板中进度书签永远置顶，显示记录时间（`2026-08-21 15:33` 格式）。
-- **「返回原进度」胶囊**：跳页/进度条点击/搜索后出现，一键回到原位置；连续 3 次自然翻页后自动确认新位置。
-- **书签系统**：一键添加/删除当前页书签；书签面板点击跳转。
-- **章节目录**：自动解析并列出章节（`第X章`/`序章`/`番外`/`Chapter N`/纯数字/`## 标题` 等），点击直达。
-- **跳页输入框**：底部输入页码回车直达。
-- **进度条点击**：点击任意位置跳转，并触发「返回原进度」胶囊。
-- **阅读排版与码字共用**：字体/字号/行距/边距/纸张背景实时生效。
-
-### 码字模式增强
-
-- **横线格重写**：改为 `repeating-linear-gradient` 单层绘制（`background-attachment: local`），
-  线条随文字原生滚动，长文本零卡顿；线条半透明、对比度弱于文字。
-- **滚动条样式**：编辑器/阅读区自定义浅色滚动条，与背景区分。
-- 衬线/楷体/无衬线/等宽字体、字号、行距、边距、纸张背景（默认/米色/浅绿/蓝色）、自动软换行、自动保存。
-
-### 文件管理（继承上游）
-
-- 固定右侧侧边栏、单工作区文件树、「添加到对话」输入框 @ 引用（DSH 原版风格）、右键菜单（含在资源管理器中打开）、
-  大文件只读保护、对话内文件链接插件内打开。
+- **固定右侧侧边栏**：替代上游的弹窗双栏面板，可拖宽度、关闭按钮收起；
+  拉出/收回带平滑动画（0.2s `var(--ds-ease-in-out)`，与 harness 左侧面板一致）
+- **单工作区文件树**：只显示当前会话所属工作区（跟随会话切换），不再堆积历史工作区
+- **「添加到对话」→ 输入框内胶囊**：右键文件/文件夹添加后，输入框内渲染只显示文件名的
+  胶囊（DSH 框架 `slash/input-insert-reference` 原生机制），发送时还原为完整绝对路径
+- **码字模式（写作模式）**：衬线/楷体/无衬线/等宽字体、字号、行距、边距、纸张背景
+  （默认/米色/浅绿/蓝色）、**自动软换行**、横线格、段落格式化
+- **码字模式自动软换行**：超宽长行按编辑器宽度自动换行（含无空格长串，
+  `overflow-wrap: anywhere`），横向无滚动条，上下滚动即可浏览全文
+- **码字模式自动保存**：停止输入 3 秒后自动落盘（普通编辑保持手动保存）
+- **右键菜单增强**：在资源管理器中打开（Windows + WSL）、复制完整/相对路径、
+  复制/粘贴条目、删除（带确认）
+- **build.mjs 防呆保护**：检测到 `lib/` 含魔改代码时拒绝运行（防误覆盖），
+  需 `FORCE_BUILD=1` 显式放行
+- **对话内文件链接改为插件内打开**：AI 消息中的产物文件/文件提及/工具调用行参数（read、edit 等）点击后不再调起
+  系统应用（Windows 记事本），改为在插件编辑器内直接打开（相对路径按工作区根解析）
 
 ### 修复
 
-- 修复阅读进度保存后无法恢复（`restoredRef` 在分页就绪前被置位导致跳过的竞态）。
-- 修复「返回原进度」胶囊遮挡底栏按钮（改为文字区底部居中）。
-- 修复跳页输入框无法输入（按键处理器误拦截输入框事件）。
-- 修复目录/书签菜单只能点击按钮关闭（改为点击外部任意处关闭）。
-- 修复横线格滚动错位/缺线（旧方案逐行 div + transform 同步不稳）。
-- **修复搜索框被左侧对话窗口遮挡**：搜索面板改为 portal 渲染到 `document.body`
-  + `position:fixed` 高层级定位（不再受面板 stacking context 限制、不越界溢出），
-  并支持点击外部关闭。
-- **浮层样式统一为 DSH 本体规范**：右键菜单/排版菜单/目录/书签/搜索框/Toast/胶囊
-  全部改用 `var(--dsw-shadow-lv3)` 阴影、`var(--dsw-specific-menu)` 背景、
-  `var(--dsw-alias-border-inverted)` 边框、12px 圆角，与 DeepSeek Harness 原生弹层视觉一致。
-- **修复进度书签干扰手动书签**：进度书签（自动生成、永远置顶、不可删除）不再参与
-  「添加书签/删除书签」按钮的判定——按钮只根据用户自定义书签触发和响应；
-  手动书签删除后立即持久化。
-- **修复进入阅读模式不跳转到保存进度**：恢复逻辑原先读 `state.paragraph`，但 `state` 实为
-  `{ progress, bookmarks }`，阅读位置在 `state.progress.paragraph`，导致恢复永远不生效、进入
-  阅读模式停在首页。改为读 `state.progress.paragraph`，进入阅读模式即自动跳到保存的进度页；
-  因该跳转是恢复而非离开当前位置，同时清掉「返回原进度」胶囊并标记为自然翻页（进度保存保持生效）。
-- **修复左右翻页与滚动翻页的进度书签不共享**：`ReadingView` 组件在切换翻页方式（paged ↔ scroll）时
-  不会重新挂载（React `key` 为文件路径），而进度恢复标记 `restoredRef` 一旦置位即永久生效，导致
-  第二种翻页方式下不再定位到保存的进度段落。改为在 `flipMode` 变化时重置 `restoredRef`，使切模式后
-  重新按段落索引（`paragraph`，两种模式通用的绝对定位键）定位；同时给滚动模式渲染的章节标题行补上
-  `data-para-index`，使书签/进度定位到章节标题那一行也能命中。用户书签跳转本就以 `paragraph` 为键，
-  现与进度书签统一，两种翻页方式下均能精确定位。
-- **新增更新维护规范**：新增 [`CONTRIBUTING.md`](./CONTRIBUTING.md)，记录从改 `lib/` → `node --check`
-  校验 → 浏览器实测 → 更新 CHANGELOG → git 提交（身份 `Nth-5620`）→ Windows 中转推送的全流程约定，
-  含「不要运行 build.mjs（魔改分支保护）」「token 只用一次性 URL 认证、用完即删」「测试勿污染
-  state.json」等注意项。
+- **码字模式横线格**：
+  - 初版用 CSS `repeating-linear-gradient` 画线，滚动时横线不跟随文字、长文本下
+    Chromium 周期性丢带（两行之间缺线）→ 改为逐 div 绘制（1px 高、整数像素定位、
+    `transform` 随滚动同步），对齐与完整性彻底解决
+  - 横线数量按 textarea 实际渲染的物理行数（含软换行）实时测量，随窗口宽度
+    （`ResizeObserver`）自动增减
+- **文件树显示**：旧实现把工作区注册表里所有工作区都渲染为树根，越用越臃肿 →
+  仅渲染当前会话所属工作区
 
-### 适配验证
+### 其他
 
+- CI 改为只做 `lib/` 语法校验（不再执行会把 `src/` 覆盖到 `lib/` 的 build 步骤）
 - 实测环境：DeepSeek Harness **0.1.0-rc.8**（自 rc.7 升级验证：插件注入点、`dsh-client-runtime` /
   `dsh-client-locale` / `dsh-client-ui-sidebar` 均随 rc.8 正常加载，web UI、文件树、码字模式
-  自动保存功能正常；`dsh-client-ui-slots` 不再作为独立包安装，但 boot 仍能按 inject 声明解析）。
-- 适配验证：DeepSeek Harness **0.1.1-rc.1**（`latest` 标签，已实际升级并用浏览器实测）。rc.1 将
-  `dsh-client-ui-primitives` 从独立 npm 包改为 web 前端内置虚拟模块（模块表
-  `"@deepseek-ai/dsh-client-ui-primitives"` 映射到内联 `Kd`，导出 `Button`/`Tooltip`/`Icon*` 等），
-  插件运行时的 `require("@deepseek-ai/dsh-client-ui-primitives")` 仍能解析。
-  **实测结果**：`dsh web` 以 rc.1 正常启动，`/readwrite-hub-api/list` 返回 200，cordis 配置注入
-  `readwrite-hub` 插件；浏览器端侧边栏「工作区文件」面板、文件树、码字/阅读模式工具栏、阅读分页
-  （`1/4250`）、进度条、目录/书签按钮全部渲染正常，无任何加载错误；`dsh-client-runtime`/`dsh-client-locale`/
-  `dsh-client-ui-sidebar`/`dsh-client-ui-settings`/`dsh-settings` 均在 rc.1 正常加载，`dsh-client-ui-slots`
-  仍按 inject 声明解析为虚拟模块。
-- 适配验证：DeepSeek Harness **0.1.1-rc.2**（`latest` 标签，已实际升级并用浏览器实测）。rc.2 延续
-  rc.1 的格局——`dsh-client-ui-primitives`/`dsh-client-ui-slots` 仍由 web 前端内置虚拟模块提供，
-  插件依赖的 `dsh-client-runtime`/`dsh-client-locale`/`dsh-client-ui-sidebar`/`dsh-client-ui-settings`/
-  `dsh-settings` 均在 rc.2 有发布版本且正常解析。**实测结果**：`dsh web` 以 rc.2 正常启动，
-  `/readwrite-hub-api/list` 返回 200，cordis 配置注入 `readwrite-hub` 插件；浏览器端侧边栏「工作区文件」
-  面板、文件树、阅读模式、跨翻页方式进度书签（分页 `左右翻页` ↔ 滚动翻页，进度保持在同一段落附近）
-  全部正常，无任何加载错误。
+  自动保存功能正常；`dsh-client-ui-slots` 不再作为独立包安装，但 boot 仍能按 inject 声明解析）
 
 ---
 
