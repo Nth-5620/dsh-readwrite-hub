@@ -74,6 +74,7 @@ AI 消息中的产物文件 / 文件提及 / 工具调用行参数（read、edit
 
 - **写作与阅读一体**：同一个文件，点「码字」进稿纸模式，点「阅读」进书籍模式，排版偏好完全共享。
 - **符合网络小说阅读习惯**：按字分页不留白、进度自动记忆、进度书签置顶、返回原进度胶囊、百万字 TXT 流畅翻页。
+- **书架**：读过的文本自动上架，顶栏图标一键在书架 / 文件树间切换；按最近阅读时间排序、可置顶、可搜索、可移除，点书即续读。
 - **可编辑的排版偏好**：字体 / 字号 / 行距 / 边距 / 纸张背景，码字阅读通用。
 - **文件管理**：VS Code 风格双栏面板，新建 / 重命名 / 复制 / 粘贴 / 删除 / 右键菜单，大文件只读保护。
 
@@ -94,6 +95,8 @@ dsh plugin --profile web add github:Nth-5620/dsh-readwrite-hub
 2. 点「码字」进入写作模式，或点「阅读」进入书籍模式。
 3. 阅读模式下：进度条点击跳转、键盘翻页、输入框跳页、「目录」直达章节、「书签」查看 / 跳转 / 删除；
    进度自动按文件保存到 `~/.dsh/readwrite-hub/state.json`。
+4. 顶栏「书架」图标按钮：开=书架，关=文件树。书架里点书自动以阅读模式打开并续读；星标可置顶、
+   垃圾桶可移除（弹窗二选一：仅移书架保留进度 / 全部移除）；顶部搜索框可按书名过滤。
 
 # 四、安全声明
 
@@ -126,18 +129,18 @@ dsh plugin --profile web add github:Nth-5620/dsh-readwrite-hub
 # 五、架构
 
 - **宿主面**（`lib/index.js`）：Cordis 插件，注册 `/readwrite-hub-api/*` REST 接口
-  （list/read/write/rename/mkdir/newfile/copy/move/delete/reveal/state），
-  `state` 原子读写 `~/.dsh/readwrite-hub/state.json`；提供 rc.8 设置槽。
+  （list/read/write/rename/mkdir/newfile/copy/move/delete/reveal/state/shelf/shelf-remove/shelf-pin），
+  `state` 原子读写 `~/.dsh/readwrite-hub/state.json`（含书架 `shelf` 字段）；提供 rc.8 设置槽。
 - **客户端面**（`lib/client.js`）：`__ModuleLoader__` 单文件浏览器 bundle，
   注册侧边栏入口与设置面板；阅读模式为 `ReadingView` 组件
-  （字符级分页 = CJK 字宽校准 + 字符切片，页面与渲染严格一致）。
+  （字符级分页 = CJK 字宽校准 + 字符切片，页面与渲染严格一致），书架为 `ShelfView` 组件。
 
 # 六、Roadmap
 
 - [x] 码字模式（字体 / 字号 / 行距 / 边距 / 背景 / 横线格 / 自动保存）
 - [x] 阅读模式（按字分页 / 进度记忆 / 书签 / 目录 / 跳页）
 - [x] 进度书签置顶 + 「返回原进度」胶囊
-- [ ] 书架系统（多书管理、最近阅读列表）
+- [x] 书架系统（多书管理、最近阅读列表、置顶、搜索、移除、失效检测）
 - [ ] 老板键（一键隐藏窗口 / 快速切换界面）
 - [ ] PDF / EPUB 阅读支持
 - [ ] 阅读统计（时长、字数）
